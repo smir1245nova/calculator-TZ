@@ -1,0 +1,117 @@
+package Main;
+import java.util.Scanner;
+public class Main {
+
+    public static int operand1;
+    public static int operand2;
+    public static char operator;
+    public static String[] roman = { "O", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"
+    };
+
+    public static void main(String[] args) throws Exception {
+        System.out.println("Введите выражение:");
+
+        Scanner sc = new Scanner(System.in);
+
+        String userInput = sc.nextLine();
+        String[] arrayUserInput = userInput.split(" ");
+
+
+        if (arrayUserInput.length < 3) {
+            throw new Exception("строка не является математической операцией");
+        } else if (arrayUserInput.length > 3) {
+            throw new Exception("формат математической операции не выполняет условие - два операнда и один оператор (+, -, /, *)");
+        }
+
+
+
+
+        operator = arrayUserInput[1].charAt(0);
+
+
+
+        boolean isRoman = checkRomanOperands(arrayUserInput[0], arrayUserInput[2]);
+
+
+
+        if (isRoman) {
+            operand1 = romanToArabian(arrayUserInput[0]);
+            operand2 = romanToArabian(arrayUserInput[2]);
+            int result = calculate(operand1, operand2, operator);
+
+            if (result < 0) {
+                throw new Exception("в римской системе нет отрицательных чисел");
+            }
+
+
+            System.out.println(roman[result]);
+        } else {
+            operand1 = Integer.parseInt(arrayUserInput[0]);
+            operand2 = Integer.parseInt(arrayUserInput[2]);
+            System.out.println(calculate(operand1, operand2, operator));
+        }
+
+
+
+
+    }
+
+
+    public static int calculate(int a, int b, char op) throws Exception {
+        int result = 0;
+        switch (op) {
+            case '+':
+                result = a + b;
+                break;
+            case '-':
+                result = a - b;
+                break;
+            case '*':
+                result = a * b;
+                break;
+            case '/':
+                if (b == 0) {
+                    throw new Exception("на ноль делить нельзя");
+                }
+                result = a / b;
+        }
+        return result;
+    }
+
+    public static boolean checkRomanOperands(String operand1, String operand2) throws Exception {
+        boolean operand1IsRoman = false;
+        boolean operand2IsRoman = false;
+        for (String s : roman) {
+            if (s.equals(operand1)) {
+                operand1IsRoman = true;
+                break;
+            }
+        }
+
+        for (String s : roman) {
+            if (s.equals(operand2)) {
+                operand2IsRoman = true;
+                break;
+            }
+        }
+        if (operand1IsRoman && operand2IsRoman) {
+            return true;
+        } else if (!operand1IsRoman && !operand2IsRoman) {
+            return false;
+        } else {
+            throw new Exception("используются одновременно разные системы исчисления");
+        }
+    }
+
+    public static int romanToArabian(String romanOperand) {
+        int result = -1;
+        for (int i = 0; i < roman.length; i++) {
+            if (roman[i].equals(romanOperand)) {
+                result = i;
+                break;
+            }
+        }
+        return result;
+    }
+
+}
